@@ -1,0 +1,786 @@
+openapi: 3.0.1
+info:
+  contact:
+    email: apisupport@mastercard.com
+    name: API Support
+    url: https://developer.mastercard.com/support
+  description: Retrieve merchant data for a given merchant descriptor
+  title: Merchant Identifier API
+  version: 3.0.0
+servers:
+- description: Production server
+  url: https://api.mastercard.com/merchant-identifier
+- description: Sandbox server
+  url: https://sandbox.api.mastercard.com/merchant-identifier
+tags:
+- description: API for Merchant Identifier
+  name: Merchants
+paths:
+  /merchants:
+    get:
+      description: Returns merchant details for matched merchants given a merchant
+        descriptor as input. (IMPORTANT - Please remove all spaces from the merchant
+        descriptor before submitting your API request)
+      operationId: getMerchants
+      parameters:
+      - description: Merchant Descriptor
+        example: DOLIUMPTYLTDWELSHPOOLWA
+        explode: true
+        in: query
+        name: merchant_descriptor
+        required: true
+        schema:
+          type: string
+        style: form
+      - description: The type of match to perform
+        example: ExactMatch
+        explode: true
+        in: query
+        name: match_type
+        required: false
+        schema:
+          default: ExactMatch
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchantList'
+          description: Information for this merchant identifier
+        "400":
+          content:
+            application/json:
+              example:
+                Errors:
+                - Error:
+                    Source: merchant_descriptor
+                    ReasonCode: INVALID_INPUT_VALUE
+                    Description: merchant_descriptor must be greater than 10 characters
+                    Recoverable: false
+                    Details: null
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Something was wrong with the request.
+        "401":
+          content:
+            application/json:
+              example:
+                Errors:
+                - Error:
+                    Source: merchantidentifier-api
+                    ReasonCode: UNAUTHORIZED
+                    Description: We couldn't recognize you
+                    Recoverable: false
+                    Details: Full authentication is required to access this resource
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Authentication information was missing or invalid.
+        "403":
+          content:
+            application/json:
+              example:
+                Errors:
+                - Error:
+                    Source: merchantidentifier-api
+                    ReasonCode: PERMISSION_DENIED
+                    Description: You don't seem authorized to do that
+                    Recoverable: false
+                    Details: Reading merchant information requires readonly permissions
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Insufficient permissions for interacting with the resource.
+      summary: Get matched merchants for a given merchant descriptor
+      tags:
+      - Merchants
+      x-accepts: application/json
+  /merchants-by-card-acceptor-ids:
+    get:
+      description: Returns merchant details for matched merchants given a card acceptor
+        id.  (IMPORTANT - Only card acceptor ids that can be uniquely mapped to one
+        merchant location are accepted)
+      operationId: getMerchantByCardAcceptorId
+      parameters:
+      - description: Card Acceptor Id
+        example: C928456
+        explode: true
+        in: query
+        name: card_acceptor_id
+        required: true
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchantByCardAcceptorIdList'
+          description: Information for this merchant identifier
+        "400":
+          content:
+            application/json:
+              example:
+                Errors:
+                - Error:
+                    Source: merchant_descriptor
+                    ReasonCode: INVALID_INPUT_VALUE
+                    Description: merchant_descriptor must be greater than 10 characters
+                    Recoverable: false
+                    Details: null
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Something was wrong with the request.
+        "401":
+          content:
+            application/json:
+              example:
+                Errors:
+                - Error:
+                    Source: merchantidentifier-api
+                    ReasonCode: UNAUTHORIZED
+                    Description: We couldn't recognize you
+                    Recoverable: false
+                    Details: Full authentication is required to access this resource
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Authentication information was missing or invalid.
+        "403":
+          content:
+            application/json:
+              example:
+                Errors:
+                - Error:
+                    Source: merchantidentifier-api
+                    ReasonCode: PERMISSION_DENIED
+                    Description: You don't seem authorized to do that
+                    Recoverable: false
+                    Details: Reading merchant information requires readonly permissions
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Insufficient permissions for interacting with the resource.
+      summary: Get matched merchant information for a given card acceptor id
+      tags:
+      - Merchants
+      x-accepts: application/json
+  /merchants-by-tax-ids:
+    get:
+      description: Returns a list merchants details for matched merchant given a tax
+        id
+      operationId: getMerchantByTaxId
+      parameters:
+      - description: The tax id assigned by government entity for location
+        example: "30499260000114"
+        explode: true
+        in: query
+        name: tax_id
+        required: true
+        schema:
+          type: string
+        style: form
+      - description: ISO 3166-1 alpha-3 country code of tax id
+        example: BRA
+        explode: true
+        in: query
+        name: country_code
+        required: true
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchantByTaxIdList'
+          description: Information for this merchant identifier
+        "400":
+          content:
+            application/json:
+              example:
+                Errors:
+                - Error:
+                    Source: merchant_descriptor
+                    ReasonCode: INVALID_INPUT_VALUE
+                    Description: merchant_descriptor must be greater than 10 characters
+                    Recoverable: false
+                    Details: null
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Something was wrong with the request.
+        "401":
+          content:
+            application/json:
+              example:
+                Errors:
+                - Error:
+                    Source: merchantidentifier-api
+                    ReasonCode: UNAUTHORIZED
+                    Description: We couldn't recognize you
+                    Recoverable: false
+                    Details: Full authentication is required to access this resource
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Authentication information was missing or invalid.
+        "403":
+          content:
+            application/json:
+              example:
+                Errors:
+                - Error:
+                    Source: merchantidentifier-api
+                    ReasonCode: PERMISSION_DENIED
+                    Description: You don't seem authorized to do that
+                    Recoverable: false
+                    Details: Reading merchant information requires readonly permissions
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Insufficient permissions for interacting with the resource.
+      summary: Get merchant information for a given tax id
+      tags:
+      - Merchants
+      x-accepts: application/json
+components:
+  parameters:
+    MerchantDescriptorParam:
+      description: Merchant Descriptor
+      example: DOLIUMPTYLTDWELSHPOOLWA
+      explode: true
+      in: query
+      name: merchant_descriptor
+      required: true
+      schema:
+        type: string
+      style: form
+    MatchTypeParam:
+      description: The type of match to perform
+      example: ExactMatch
+      explode: true
+      in: query
+      name: match_type
+      required: false
+      schema:
+        default: ExactMatch
+        type: string
+      style: form
+    MerchantCardAcceptorIdParam:
+      description: Card Acceptor Id
+      example: C928456
+      explode: true
+      in: query
+      name: card_acceptor_id
+      required: true
+      schema:
+        type: string
+      style: form
+    Country:
+      description: ISO 3166-1 alpha-3 country code of tax id
+      example: BRA
+      explode: true
+      in: query
+      name: country_code
+      required: true
+      schema:
+        type: string
+      style: form
+    TaxId:
+      description: The tax id assigned by government entity for location
+      example: "30499260000114"
+      explode: true
+      in: query
+      name: tax_id
+      required: true
+      schema:
+        type: string
+      style: form
+  responses:
+    MerchantList:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MerchantList'
+      description: Information for this merchant identifier
+    MerchantByCardAcceptorIdList:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MerchantByCardAcceptorIdList'
+      description: Information for this merchant identifier
+    MerchantByTaxIdList:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MerchantByTaxIdList'
+      description: Information for this merchant identifier
+    BadRequestError:
+      content:
+        application/json:
+          example:
+            Errors:
+            - Error:
+                Source: merchant_descriptor
+                ReasonCode: INVALID_INPUT_VALUE
+                Description: merchant_descriptor must be greater than 10 characters
+                Recoverable: false
+                Details: null
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      description: Something was wrong with the request.
+    UnauthorizedError:
+      content:
+        application/json:
+          example:
+            Errors:
+            - Error:
+                Source: merchantidentifier-api
+                ReasonCode: UNAUTHORIZED
+                Description: We couldn't recognize you
+                Recoverable: false
+                Details: Full authentication is required to access this resource
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      description: Authentication information was missing or invalid.
+    ForbiddenError:
+      content:
+        application/json:
+          example:
+            Errors:
+            - Error:
+                Source: merchantidentifier-api
+                ReasonCode: PERMISSION_DENIED
+                Description: You don't seem authorized to do that
+                Recoverable: false
+                Details: Reading merchant information requires readonly permissions
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      description: Insufficient permissions for interacting with the resource.
+  schemas:
+    Address:
+      description: Available information for this Address such as the street, city,
+        country, country subdivision an postal code.
+      example:
+        country:
+          code: AUS
+          name: Australia
+        countrySubdivision:
+          code: WA
+          name: Western Australia
+        line1: UNIT 2 248 WELSHPOOL RD
+        line2: "12"
+        postalCode: "6106"
+      properties:
+        city:
+          description: Name of the city or town where the merchant is located
+          example: WELSHPOOL
+          type: string
+        country:
+          $ref: '#/components/schemas/Country'
+        countrySubdivision:
+          $ref: '#/components/schemas/CountrySubDivision'
+        line1:
+          description: Line 1 of the street address of the merchant. Usually includes
+            the street number and name
+          example: UNIT 2 248 WELSHPOOL RD
+          type: string
+        line2:
+          description: Line 2 of the street address, usually an apartment number or
+            suite number
+          example: "12"
+          type: string
+        postalCode:
+          description: The zip code or postal code for a merchant
+          example: "6106"
+          type: string
+      type: object
+    Country:
+      description: Available information the Country such as the name and code
+      example:
+        Country:
+          code: AUS
+          name: Australia
+      properties:
+        code:
+          description: Three digit alpha country code as defined in ISO 3166-1
+          example: AUS
+          type: string
+        name:
+          description: Name of the country
+          example: Australia
+          type: string
+      type: object
+    CountrySubDivision:
+      description: Available information the Country Subdivision such as the name
+        and code
+      example:
+        CountrySubDivision:
+          code: WA
+          name: Western Australia
+      properties:
+        code:
+          description: Abbreviated code for the state or province
+          example: WA
+          type: string
+        name:
+          description: Name of the state or province
+          example: Western Australia
+          type: string
+      type: object
+    Error:
+      description: Details of the error condition such as the source of the error,
+        reason code for the error, if the error is recoverable, and details about
+        the error
+      properties:
+        Source:
+          description: The application that generated this error
+          example: merchantid
+          maxLength: 150
+          minLength: 0
+          type: string
+        ReasonCode:
+          description: A unique constant identifying the error case encountered during
+            transaction processing
+          example: TOO_MANY_MATCHES
+          maxLength: 150
+          minLength: 0
+          type: string
+        Description:
+          description: Short description of the ReasonCode field
+          example: Too many matches found.  Please refine search input
+          maxLength: 150
+          minLength: 0
+          type: string
+        Recoverable:
+          description: Indicates whether this error will always be returned for this
+            request, or retrying could change the outcome
+          example: false
+          type: boolean
+        Details:
+          description: Description of the issue
+          example: The search resulted in too many matches
+          maxLength: 150
+          minLength: 0
+          nullable: true
+          type: string
+      required:
+      - Description
+      - ReasonCode
+      - Recoverable
+      - Source
+      type: object
+    ErrorResponse:
+      description: Only returned in the event of an error condition
+      properties:
+        Errors:
+          $ref: '#/components/schemas/Errors'
+      required:
+      - Errors
+      type: object
+    Errors:
+      description: Only returned in the event of an error condition
+      example:
+        Errors:
+        - Error:
+            Source: merchant_descriptor
+            ReasonCode: INVALID_INPUT_VALUE
+            Description: merchant_descriptor must be greater than 10 characters
+            Recoverable: false
+            Details: null
+      properties:
+        Error:
+          description: An error object
+          example:
+          - Error:
+              Source: merchant_descriptor
+              ReasonCode: INVALID_INPUT_VALUE
+              Description: merchant_descriptor must be greater than 10 characters
+              Recoverable: false
+              Details: null
+          items:
+            $ref: '#/components/schemas/Error'
+          type: array
+      required:
+      - Error
+      type: object
+    Merchant:
+      description: Available information the merchant such as Address, matchConfidenceScore,
+        and locationId
+      properties:
+        address:
+          $ref: '#/components/schemas/Address'
+        brandName:
+          description: The brand name of the merchant
+          example: DOLIUM PTY LTD
+          type: string
+        merchantDescriptor:
+          description: Descriptor for the merchant provided by the Merchant Service
+            Provider(MSP)
+          example: DOLIUMPTYLTDWELSHPOOLWA
+          type: string
+        legalCorporateName:
+          description: Corporate legal name of the merchant
+          example: DOLIUM PTY LTD
+          type: string
+        locationId:
+          description: Merchant specific location identifier
+          example: 344147943
+          format: int32
+          type: integer
+        matchConfidenceScore:
+          description: Confidence score (%) to help clients understand the quality
+            of the search results
+          example: 100
+          format: int32
+          type: integer
+        merchantCategory:
+          description: Merchant category code and description associated with the
+            merchant category code for the merchant
+          example: 5533 - AUTOMOTIVE PARTS  ACCESSORIES STORES
+          type: string
+        merchantDbaName:
+          description: The business name of the merchant
+          example: DOLIUM PTY LTD
+          type: string
+        phoneNumber:
+          description: phoneNumber
+          example: "893582575"
+          type: string
+        soleProprietorName:
+          description: The name of the proprietor
+          example: Sole Proprietor Name example
+          type: string
+      type: object
+    MerchantByCardAcceptorId:
+      description: Available information the merchant such as Address, matchConfidenceScore,
+        and locationId
+      properties:
+        address:
+          $ref: '#/components/schemas/Address'
+        brandName:
+          description: The brand name of the merchant
+          example: DOLIUM PTY LTD
+          type: string
+        cardAcceptorId:
+          description: The Card Acceptor ID assigned by the acquirer
+          example: C928456
+          type: string
+        legalCorporateName:
+          description: Corporate legal name of the merchant
+          example: DOLIUM PTY LTD
+          type: string
+        locationId:
+          description: Merchant specific location identifier
+          example: 344147943
+          format: int32
+          type: integer
+        merchantCategory:
+          description: Merchant category code and description associated with the
+            merchant category code for the merchant
+          example: 5533 - AUTOMOTIVE PARTS  ACCESSORIES STORES
+          type: string
+        merchantDbaName:
+          description: The business name of the merchant
+          example: DOLIUM PTY LTD
+          type: string
+        phoneNumber:
+          description: phoneNumber
+          example: "893582575"
+          type: string
+        soleProprietorName:
+          description: The name of the proprietor
+          example: Sole Proprietor Name example
+          type: string
+      type: object
+    MerchantByTaxId:
+      description: Available information the merchant such as Address, and locationId
+      properties:
+        address:
+          $ref: '#/components/schemas/Address'
+        brandName:
+          description: The brand name of the merchant
+          example: DOLIUM PTY LTD
+          type: string
+        taxId:
+          description: The tax id assigned by government entity for location
+          example: "30499260000114"
+          type: string
+        legalCorporateName:
+          description: Corporate legal name of the merchant
+          example: DOLIUM PTY LTD
+          type: string
+        locationId:
+          description: Merchant specific location identifier
+          example: 344147943
+          format: int32
+          type: integer
+        merchantCategory:
+          description: Merchant category code and description associated with the
+            merchant category code for the merchant
+          example: 5533 - AUTOMOTIVE PARTS  ACCESSORIES STORES
+          type: string
+        merchantDbaName:
+          description: The business name of the merchant
+          example: DOLIUM PTY LTD
+          type: string
+        phoneNumber:
+          description: phoneNumber
+          example: "893582575"
+          type: string
+        soleProprietorName:
+          description: The name of the proprietor
+          example: Sole Proprietor Name example
+          type: string
+      type: object
+    MerchantList:
+      description: List of merchants
+      example:
+        merchants:
+        - matchConfidenceScore: 100
+          address:
+            line1: UNIT 2 248 WELSHPOOL RD
+            line2: "12"
+            city: Springfield
+            postalCode: "6106"
+            country:
+              code: AUS
+              name: Australia
+            countrySubdivision:
+              code: WA
+              name: Western Australia
+          brandName: DOLIUM PTY LTD
+          phoneNumber: "893582575"
+          merchantCategory: 5533 - AUTOMOTIVE PARTS  ACCESSORIES STORES
+          merchantDbaName: DOLIUM PTY LTD
+          merchantDescriptor: DOLIUMPTYLTDWELSHPOOLWA
+          legalCorporateName: DOLIUM PTY LTD
+          locationId: 344147943
+          soleProprietorName: Joe
+      properties:
+        merchants:
+          description: merchants
+          example:
+          - matchConfidenceScore: 100
+            address:
+              line1: UNIT 2 248 WELSHPOOL RD
+              line2: "12"
+              city: Springfield
+              postalCode: "6106"
+              country:
+                code: AUS
+                name: Australia
+              countrySubdivision:
+                code: WA
+                name: Western Australia
+            brandName: DOLIUM PTY LTD
+            phoneNumber: "893582575"
+            merchantCategory: 5533 - AUTOMOTIVE PARTS  ACCESSORIES STORES
+            merchantDbaName: DOLIUM PTY LTD
+            merchantDescriptor: DOLIUMPTYLTDWELSHPOOLWA
+            legalCorporateName: DOLIUM PTY LTD
+            locationId: 344147943
+            soleProprietorName: Joe
+          items:
+            $ref: '#/components/schemas/Merchant'
+          type: array
+      type: object
+    MerchantByCardAcceptorIdList:
+      description: List of merchants
+      example:
+        merchants:
+        - address:
+            line1: UNIT 2 248 WELSHPOOL RD
+            line2: "12"
+            city: Springfield
+            postalCode: "6106"
+            country:
+              code: AUS
+              name: Australia
+            countrySubdivision:
+              code: WA
+              name: Western Australia
+          brandName: DOLIUM PTY LTD
+          phoneNumber: "893582575"
+          merchantCategory: 5533 - AUTOMOTIVE PARTS  ACCESSORIES STORES
+          merchantDbaName: DOLIUM PTY LTD
+          cardAcceptorId: C928456
+          legalCorporateName: DOLIUM PTY LTD
+          locationId: 344147943
+          soleProprietorName: Joe
+      properties:
+        merchants:
+          description: merchants
+          example:
+          - address:
+              line1: UNIT 2 248 WELSHPOOL RD
+              line2: "12"
+              city: Springfield
+              postalCode: "6106"
+              country:
+                code: AUS
+                name: Australia
+              countrySubdivision:
+                code: WA
+                name: Western Australia
+            brandName: DOLIUM PTY LTD
+            phoneNumber: "893582575"
+            merchantCategory: 5533 - AUTOMOTIVE PARTS  ACCESSORIES STORES
+            merchantDbaName: DOLIUM PTY LTD
+            cardAcceptorId: C928456
+            legalCorporateName: DOLIUM PTY LTD
+            locationId: 344147943
+            soleProprietorName: Joe
+          items:
+            $ref: '#/components/schemas/MerchantByCardAcceptorId'
+          type: array
+      type: object
+    MerchantByTaxIdList:
+      description: List of merchants
+      example:
+        merchants:
+        - address:
+            line1: UNIT 2 248 WELSHPOOL RD
+            line2: "12"
+            city: Springfield
+            postalCode: "6106"
+            country:
+              code: AUS
+              name: Australia
+            countrySubdivision:
+              code: WA
+              name: Western Australia
+          brandName: DOLIUM PTY LTD
+          phoneNumber: "893582575"
+          merchantCategory: 5533 - AUTOMOTIVE PARTS  ACCESSORIES STORES
+          merchantDbaName: DOLIUM PTY LTD
+          taxId: "30499260000114"
+          legalCorporateName: DOLIUM PTY LTD
+          locationId: 344147943
+          soleProprietorName: Joe
+      properties:
+        merchants:
+          description: merchants
+          example:
+          - address:
+              line1: UNIT 2 248 WELSHPOOL RD
+              line2: "12"
+              city: Springfield
+              postalCode: "6106"
+              country:
+                code: AUS
+                name: Australia
+              countrySubdivision:
+                code: WA
+                name: Western Australia
+            brandName: DOLIUM PTY LTD
+            phoneNumber: "893582575"
+            merchantCategory: 5533 - AUTOMOTIVE PARTS  ACCESSORIES STORES
+            merchantDbaName: DOLIUM PTY LTD
+            taxId: "30499260000114"
+            legalCorporateName: DOLIUM PTY LTD
+            locationId: 344147943
+            soleProprietorName: Joe
+          items:
+            $ref: '#/components/schemas/MerchantByTaxId'
+          type: array
+      type: object
+
